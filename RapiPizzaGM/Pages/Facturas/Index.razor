@@ -1,0 +1,134 @@
+﻿@page "/facturas"
+<h3>Facturas(@facturas.Count)</h3>
+<div>
+	<button>
+		Agregar
+	</button>
+</div>
+<div class="container">
+	@if (ShowForm)
+	{
+	<EditForm Model="request" OnValidSubmit="Send">
+		<div class="mb-3">
+               <label>
+				   ClienteId
+			   </label>
+			   <InputText @bind-value= "@request.ClienteId">
+				  
+			   </InputText>
+		</div>
+		<EditForm Model="request" OnValidSubmit="Send">
+		<div class="mb-3">
+               <label>
+				   Referencia
+			   </label>
+			   <InputText @bind-value= "@request.Referencia">
+				  
+			   </InputText>
+		</div>
+		<div class="mb-3">
+               <label>
+				   Extra
+			   </label>
+			   <InputText @bind-value= "@request.Extra">
+				  
+			   </InputText>
+		</div>
+		<div class="mb-3">
+               <label>
+				   SubTotal
+			   </label>
+			   <InputText @bind-value= "@request.SubTotal">
+				  
+			   </InputText>
+		</div>
+		<div class="mb-3">
+               <label>
+				   ITBIS
+			   </label>
+			   <InputText @bind-value= "@request.ITBIS">
+				  
+			   </InputText>
+		</div>
+		<div class="mb-3">
+               <label>
+				   Total
+			   </label>
+			   <InputText @bind-value= "@request.Total">
+				  
+			   </InputText>
+		</div>
+	</EditForm>
+	     <br/>
+	}
+	@foreach (var factura in facturas)
+	{
+		<div class="card" style="width:18rem;">
+			<div class="card-body">
+				<label class="card-title">
+					@factura.ClienteId
+				</label>
+				<div class="card-text">
+					<label><b> </b> Referencia: @factura.Referencia</label>
+				<button class="btn btn-warning">Editar</button>
+				<button class="btn btn-danger">Eliminar</button>
+			</div>
+		</div>
+	}
+</div>
+@code {
+	public bool ShowForm { get; set; } = false;
+	public string Filtro { get; set; } = "";
+
+	public List<FacturaResponse> facturas { get; set; }
+	= new List<FacturaResponse>();
+
+	public FacturaRequest request { get; set; } = new FacturaRequest();
+
+	async Task CargarFacturas()
+	{
+		var resultado = await FacturaServices.Consultar(Filtro);
+		if (resultado.Success)
+		{
+			facturas = resultado.Data!;
+		}
+	}
+
+	protected override async Task OnInitializedAsync()
+	{
+		await CargarFacturas();
+	}
+
+	public async Task Send()
+	{
+		if (request.Id == 0)
+		{
+			//Debo Registrar El Factura...
+			var r = await FacturaServices.Crear(request);
+			if (r.Success)
+			{
+				await CargarFacturas();
+				StateHasChanged();
+			}
+		}
+		else
+		{
+			//Debo Solicitar Modificar Factura...
+			var r = await FacturaServices.Modificar(request);
+			if (r.Success)
+			{
+				await CargarFacturas();
+				StateHasChanged();
+			}
+		}
+	}
+
+	public void Seleccionar(int Id, bool showForm = true)
+	{
+		ShowForm = showForm;
+		request = facturas
+				.Where(c => c.Id == Id)
+				.Select(c => c.ToRequest())
+				.FirstOrDefault() ?? new FacturaRequest();
+	}
+}

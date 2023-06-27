@@ -1,0 +1,112 @@
+﻿@page "/pizzas"
+<h3>Pizzas(@pizzas.Count)</h3>
+<div>
+	<button>
+		Agregar
+	</button>
+</div>
+<div class="container">
+	@if (ShowForm)
+	{
+		<EditForm Model="request" OnValidSubmit="Send">
+			<div class="mb-3">
+				<label>
+					Nombre
+				</label>
+				<InputText @bind-value="@request.Nombre">
+
+				</InputText>
+			</div>
+			<div class="mb-3">
+				<label>
+					Tamaño
+				</label>
+				<InputText @bind-value="@request.Tamaño">
+
+				</InputText>
+			</div>
+			<div class="mb-3">
+				<label>
+					Precio
+				</label>
+				<InputText @bind-value="@request.Precio">
+
+				</InputText>
+			</div>
+		</EditForm>
+		<br />
+	}
+	@foreach (var pizza in pizzas)
+	{
+		<div class="card" style="width:18rem;">
+			<div class="card-body">
+				<label class="card-title">@pizza.Nombre </label>
+				<div class="card-text">
+					<label><b>Tamaño</b> @pizza.Tamaño</label>
+				</div>
+				<div class="card-text">
+					<button class="btn btn-warning">Editar</button>
+					<button class="btn btn-danger">Eliminar</button>
+				</div>
+
+			</div>
+
+		</div>
+	}
+</div>
+
+@code {
+	public bool ShowForm { get; set; } = false;
+	public string Filtro { get; set; } = "";
+
+	public List<PizzaResponse> pizzas { get; set; }
+		= new List<PizzaResponse>();
+
+	public PizzaRequest request { get; set; } = new PizzaRequest();
+
+	async Task CargarPizzas()
+	{
+		var resultado = await PizzaServices.Consultar(Filtro);
+		if (resultado.Success)
+		{
+			pizzas = resultado.Data!;
+		}
+	}
+
+	protected override async Task OnInitializedAsync()
+	{
+		await CargarPizzas();
+	}
+
+	public async Task Send()
+	{
+		if (request.Id == 0)
+		{
+			//Debo Registrar Pizza...
+			var r = await PizzaServices.Crear(request);
+			if (r.Success)
+			{
+				await CargarPizzas();
+				StateHasChanged();
+			}
+		}
+		else
+		{
+			//Debo Solicitar Modificar Pizza...
+			var r = await PizzaServices.Modificar(request);
+			if (r.Success)
+			{
+				await CargarPizzas();
+				StateHasChanged();
+			}
+		}
+	}
+
+	public void Seleccionar(int Id, bool showForm = true)
+	{
+		ShowForm = showForm;
+		request = pizzas.Where(c => c.Id == Id)
+				.Select(c => c.ToRequest())
+				.FirstOrDefault() ?? new PizzaRequest();
+	}
+}

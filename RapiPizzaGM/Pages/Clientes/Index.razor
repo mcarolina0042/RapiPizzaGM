@@ -1,8 +1,9 @@
 ﻿@page "/clientes"
 <h3>Clientes@Clientes.Count</h3>
 
-<div>
-	<button>
+<div class ="mb-2">
+	<button class="btn btn-success"
+		@onclick="()=>{ShowForm = !ShowForm;}">
 		Agregar
 	</button>
 </div>
@@ -10,7 +11,7 @@
 	@if (ShowForm)
 	{
 		<EditForm Model="request" OnValidSubmit="Send">
-			<div class="mb-3">
+			<div class="mb-3 input-group">
 				<label>
 					Nombre
 				</label>

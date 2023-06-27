@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using RapiPizzaGM.Data.Request;
+using RapiPizzaGM.Data.Response;
+using System.ComponentModel.DataAnnotations;
 namespace RapiPizzaGM.Data.Models
 {
 	public class Pizza
@@ -12,5 +14,48 @@ namespace RapiPizzaGM.Data.Models
 
 
 		public decimal Precio { get; set; }
+
+		public static Pizza Crear(PizzaRequest pizza)
+			=> new Pizza()
+			{
+				Nombre = pizza.Nombre,
+				Tamaño = pizza.Tamaño,
+				Precio = pizza.Precio,
+
+			};
+		public bool Modificar(PizzaRequest pizza)
+		{
+			var cambio = false;
+			if (Nombre != pizza.Nombre)
+			{
+				Nombre = pizza.Nombre;
+				cambio = true;
+			}
+			if (Tamaño != pizza.Tamaño)
+			{
+				Tamaño = pizza.Tamaño;
+				cambio = true;
+			}
+			if (Precio != pizza.Precio)
+			{
+				Precio = pizza.Precio;
+				cambio = true;
+			}
+
+			return cambio;
+
+		}
+
+		public PizzaResponse ToResponse()
+		{
+			return new PizzaResponse
+			{
+				Nombre = Nombre,
+				Tamaño = Tamaño,
+				Precio = Precio,
+
+
+			};
+		}
 	}
 }

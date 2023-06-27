@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.EntityFrameworkCore;
 using RapiPizzaGM.Data;
 using RapiPizzaGM.Data.Context;
+using RapiPizzaGM.Data.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +13,10 @@ builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddDbContext<RapiPizzaDbContext>();
 builder.Services.AddScoped<IRapiPizzaDbContext, RapiPizzaDbContext>();
+builder.Services.AddScoped<IClientesServices, ClientesServices>();
+builder.Services.AddScoped<IFacturaServices, FacturaServices>();
+builder.Services.AddScoped<IPizzaServices, PizzaServices>();
+builder.Services.AddScoped<IUsuarioServices, UsuarioServices>();
 
 var app = builder.Build();
 

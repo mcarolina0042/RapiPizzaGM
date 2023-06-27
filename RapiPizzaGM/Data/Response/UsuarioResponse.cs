@@ -1,4 +1,6 @@
-﻿namespace RapiPizzaGM.Data.Response
+﻿using RapiPizzaGM.Data.Request;
+
+namespace RapiPizzaGM.Data.Response
 {
 	public class UsuarioResponse
 	{
@@ -11,5 +13,19 @@
 
 
 		public string Sexo { get; set; } = null!;
+
+		public UsuarioRequest ToRequest()
+		{
+			return new UsuarioRequest
+			{
+				Id = Id,
+				Nombre = Nombre,
+				Email = Email,
+				Contraseña = Contraseña,
+				Sexo = Sexo
+
+			};
+
+		}
 	}
 }

@@ -1,4 +1,7 @@
-﻿namespace RapiPizzaGM.Data.Response
+﻿using RapiPizzaGM.Data.Request;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+
+namespace RapiPizzaGM.Data.Response
 {
 	public class FacturaResponse
 	{
@@ -16,5 +19,20 @@
 		public decimal Descuento { get; set; }
 		public decimal ITBIS { get; set; }
 		public decimal Total { get; set; }
+
+		public FacturaRequest ToRequest()
+		{
+			return new	FacturaRequest
+			{
+				Id = Id,
+				ClienteId = ClienteId,
+				Referencia = Referencia,
+				Extra = Extra,
+				SubTotal = SubTotal,
+				ITBIS = ITBIS,
+				Total = Total
+			};
+
+		}
 	}
 }

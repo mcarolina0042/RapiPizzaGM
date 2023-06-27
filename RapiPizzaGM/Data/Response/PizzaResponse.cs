@@ -1,4 +1,7 @@
-﻿namespace RapiPizzaGM.Data.Response
+﻿using RapiPizzaGM.Data.Models;
+using RapiPizzaGM.Data.Request;
+
+namespace RapiPizzaGM.Data.Response
 {
 	public class PizzaResponse
 	{
@@ -10,5 +13,18 @@
 
 
 		public decimal Precio { get; set; }
+
+		public PizzaRequest ToRequest()
+		{
+			return new PizzaRequest
+			{
+				Id = Id,
+				Nombre = Nombre,
+				Tamaño = Tamaño,
+				Precio = Precio,
+				
+			};
+
+		}
 	}
 }
